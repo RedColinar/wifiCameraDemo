@@ -2,6 +2,10 @@ package com.example.pq.wificamerademo.camera.sdkApi;
 
 import com.example.pq.wificamerademo.camera.ExceptionHelper;
 import com.icatch.wificam.customer.ICatchWificamPreview;
+import com.icatch.wificam.customer.exception.IchCameraModeException;
+import com.icatch.wificam.customer.exception.IchInvalidSessionException;
+import com.icatch.wificam.customer.exception.IchSocketException;
+import com.icatch.wificam.customer.exception.IchStreamNotRunningException;
 import com.icatch.wificam.customer.type.ICatchAudioFormat;
 import com.icatch.wificam.customer.type.ICatchPreviewMode;
 import com.icatch.wificam.customer.type.ICatchStreamParam;
@@ -26,7 +30,15 @@ public class PreviewStream {
     }
 
     public ICatchVideoFormat getVideoFormat(ICatchWificamPreview previewStreamControl) {
-        return ExceptionHelper.invoke(previewStreamControl::getVideoFormat);
+        ICatchVideoFormat videoFormat = null;
+
+        try {
+            videoFormat = previewStreamControl.getVideoFormat();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return videoFormat;
+        // return ExceptionHelper.invoke(previewStreamControl::getVideoFormat);
     }
 
     public ICatchAudioFormat getAudioFormat(ICatchWificamPreview previewStreamControl) {

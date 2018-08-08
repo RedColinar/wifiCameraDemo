@@ -36,6 +36,7 @@ public class PropertyId {
     public final static int CAMERA_CONNECT_CHANGE = 0xD7A1;
 
     //新增属性 20170316
+    public final static int FAST_CAPTURE = 0xD704;
     public final static int SCREEN_SAVER = 0xD720;
     public final static int AUTO_POWER_OFF = 0xD721;
     public final static int POWER_ON_AUTO_RECORD = 0xD722;

@@ -1,7 +1,6 @@
 package com.example.pq.wificamerademo.camera.sdkApi;
 
 import com.example.pq.wificamerademo.camera.ExceptionHelper;
-import com.example.pq.wificamerademo.camera.ISdkSession;
 import com.icatch.wificam.customer.ICatchWificamConfig;
 import com.icatch.wificam.customer.ICatchWificamSession;
 import com.icatch.wificam.customer.exception.IchInvalidSessionException;
@@ -12,7 +11,7 @@ import com.icatch.wificam.customer.exception.IchInvalidSessionException;
  * @date 2018/8/3 11:29
  * @description
  */
-public class CameraSession implements ISdkSession {
+public class CameraSession {
 
     private ICatchWificamSession cameraSession;
     private boolean sessionPrepared;
@@ -21,12 +20,10 @@ public class CameraSession implements ISdkSession {
     private final String username = "anonymous";
     private final String password = "anonymous@icatchtek.com";
 
-    @Override
     public boolean prepareSession() {
         return prepareSession(defaultIp);
     }
 
-    @Override
     public boolean prepareSession(String ip) {
         ICatchWificamConfig.getInstance().enablePTPIP();
         cameraSession = new ICatchWificamSession();
@@ -34,7 +31,6 @@ public class CameraSession implements ISdkSession {
         return sessionPrepared;
     }
 
-    @Override
     public boolean checkWifiConnection() {
         boolean retValue = false;
         try {
@@ -45,7 +41,6 @@ public class CameraSession implements ISdkSession {
         return retValue;
     }
 
-    @Override
     public boolean destroySession() {
         return ExceptionHelper.invokeBool(cameraSession::destroySession);
     }

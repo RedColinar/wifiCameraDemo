@@ -8,4 +8,8 @@ package com.example.pq.wificamerademo.constants;
  */
 public class AppInfo {
     public static boolean disableAudio = false;
+    public static boolean isSdCardExist;
+    public static boolean autoDownloadAllow = true;
+
+    public static final String DOWNLOAD_PATH = "/DCIM/wifiCameraDemo/";
 }

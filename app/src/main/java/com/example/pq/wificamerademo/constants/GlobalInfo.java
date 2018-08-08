@@ -9,8 +9,6 @@ package com.example.pq.wificamerademo.constants;
 public class GlobalInfo {
 
     public static double curFps = 30;
-
     public static int videoCacheNum;
-
     public final static double THRESHOLD_TIME = 0.1;
 }

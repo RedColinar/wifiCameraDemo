@@ -147,18 +147,13 @@ public class H264DecoderThread {
             int inIndex = -1;
             int sampleSize = 0;
             long pts = 0;
-            boolean retvalue = true;
+            boolean retvalue;
             boolean isFirst = true;
             long lastTime = System.currentTimeMillis();
-            long endTime = System.currentTimeMillis();
-            long currentTime;
             while (!done) {
-                retvalue = false;
                 curVideoPts = -1;
 
                 try {
-//                    AppLog.d(TAG, "end time=" + (System.currentTimeMillis() - endTime));
-//                    endTime = System.currentTimeMillis();
                     if (previewLaunchMode == RT_PREVIEW_MODE) {
                         retvalue = previewStreamControl.getNextVideoFrame(frameBuffer);
                     } else {
@@ -169,22 +164,22 @@ public class H264DecoderThread {
                     }
                 } catch (IchTryAgainException ex) {
                     ex.printStackTrace();
-                    retvalue = false;
-//                    AppLog.e(TAG, "getNextVideoFrame " + ex.getClass().getSimpleName());
                     continue;
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    retvalue = false;
                     break;
                 }
-                if (frameBuffer.getFrameSize() <= 0 || frameBuffer == null) {
-                    retvalue = false;
+                if (frameBuffer.getFrameSize() <= 0) {
                     continue;
                 }
-                if (!retvalue) {
-                    continue;
+
+                try {
+                    inIndex = decoder.dequeueInputBuffer(timeout);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
                 }
-                inIndex = decoder.dequeueInputBuffer(timeout);
+
                 curVideoPts = frameBuffer.getPresentationTime();
 
                 frameSize++;

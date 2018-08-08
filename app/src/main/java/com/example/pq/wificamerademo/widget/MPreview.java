@@ -93,6 +93,7 @@ public class MPreview extends SurfaceView implements SurfaceHolder.Callback {
     public boolean start(MyCamera myCamera, int previewLaunchMode) {
         this.previewLaunchMode = previewLaunchMode;
         if (previewLaunchMode == RT_PREVIEW_MODE) {
+            // 抛出异常的地方
             videoFormat = previewStream.getVideoFormat(myCamera.getPreviewStream());
             if (videoFormat != null) {
                 frmW = videoFormat.getVideoW();

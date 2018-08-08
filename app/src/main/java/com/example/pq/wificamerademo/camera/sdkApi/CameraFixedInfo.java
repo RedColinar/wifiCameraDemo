@@ -17,8 +17,7 @@ public class CameraFixedInfo {
     private ICatchWificamControl cameraControl;
 
     private CameraFixedInfo() {
-        cameraFixedInfo = MyApplication.getMyCamera().getCameraInfo();
-        cameraControl = MyApplication.getMyCamera().getCameraControl();
+        init();
     }
 
     private static class CameraFixedInfoHolder {
@@ -27,6 +26,11 @@ public class CameraFixedInfo {
 
     public static CameraFixedInfo getInstance() {
         return CameraFixedInfoHolder.sInstance;
+    }
+
+    public void init() {
+        cameraFixedInfo = MyApplication.getMyCamera().getCameraInfo();
+        cameraControl = MyApplication.getMyCamera().getCameraControl();
     }
 
     public String getCameraName() {

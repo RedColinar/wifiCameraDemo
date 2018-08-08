@@ -11,7 +11,6 @@ import com.example.pq.wificamerademo.camera.MyCamera;
 import com.example.pq.wificamerademo.rx.BaseObserver;
 import com.example.pq.wificamerademo.view.preview.PreviewActivity;
 import com.example.pq.wificamerademo.wifi.HotSpot;
-import com.icatch.wificam.customer.type.ICatchEventID;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
         btConnect = findViewById(R.id.bt_connect);
         btConnect.setOnClickListener(v -> launchCamera());
-
-        ((MyApplication) getApplication()).getSdkEvent().addGlobalEventListener(ICatchEventID.ICH_EVENT_SDCARD_REMOVED, false);
     }
 
     private void launchCamera() {

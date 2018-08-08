@@ -14,7 +14,7 @@ public class CameraState {
     private ICatchWificamState cameraState;
 
     private CameraState() {
-        cameraState = MyApplication.getMyCamera().getCameraState();
+        init();
     }
 
     private static class CameraStateHolder {
@@ -23,6 +23,10 @@ public class CameraState {
 
     public static CameraState getInstance() {
         return CameraStateHolder.sInstance;
+    }
+
+    public void init() {
+        cameraState = MyApplication.getMyCamera().getCameraState();
     }
 
     public boolean isTimeLapseStillOn() {

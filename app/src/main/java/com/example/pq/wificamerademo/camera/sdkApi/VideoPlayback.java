@@ -16,7 +16,7 @@ public class VideoPlayback {
     private ICatchWificamVideoPlayback videoPlayback;
 
     private VideoPlayback() {
-        videoPlayback = MyApplication.getMyCamera().getVideoPlayback();
+        init();
     }
 
     private static class VideoPlaybackHolder {
@@ -25,6 +25,10 @@ public class VideoPlayback {
 
     public static VideoPlayback getInstance() {
         return VideoPlaybackHolder.sInstance;
+    }
+
+    public void init() {
+        videoPlayback = MyApplication.getMyCamera().getVideoPlayback();
     }
 
     public ICatchAudioFormat getAudioFormat() {

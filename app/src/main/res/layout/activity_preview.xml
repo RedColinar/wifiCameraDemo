@@ -25,4 +25,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.google.vr.sdk.widgets.pano.VrPanoramaView
+        android:id="@+id/pano_view"
+        android:layout_margin="5dp"
+        android:visibility="gone"
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
+
+    <ImageView
+        android:id="@+id/iv_preview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="200dp"
+        android:layout_height="150dp" />
+
+    <Button
+        android:id="@+id/continue_photo"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="继续拍照"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>

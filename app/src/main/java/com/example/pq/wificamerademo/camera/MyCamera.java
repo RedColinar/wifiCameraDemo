@@ -1,6 +1,12 @@
 package com.example.pq.wificamerademo.camera;
 
+import com.example.pq.wificamerademo.camera.sdkApi.CameraAction;
+import com.example.pq.wificamerademo.camera.sdkApi.CameraFile;
+import com.example.pq.wificamerademo.camera.sdkApi.CameraFixedInfo;
+import com.example.pq.wificamerademo.camera.sdkApi.CameraProperties;
 import com.example.pq.wificamerademo.camera.sdkApi.CameraSession;
+import com.example.pq.wificamerademo.camera.sdkApi.CameraState;
+import com.example.pq.wificamerademo.camera.sdkApi.VideoPlayback;
 import com.icatch.wificam.customer.ICatchWificamAssist;
 import com.icatch.wificam.customer.ICatchWificamControl;
 import com.icatch.wificam.customer.ICatchWificamInfo;
@@ -47,6 +53,14 @@ public class MyCamera {
             cameraInfo = mCameraSession.getCameraSession().getInfoClient();
             cameraState = mCameraSession.getCameraSession().getStateClient();
             cameraAssist = ICatchWificamAssist.getInstance();
+
+            CameraAction.getInstance().init();
+            CameraFile.getInstance().init();
+            CameraFixedInfo.getInstance().init();
+            CameraProperties.getInstance().init();
+            CameraState.getInstance().init();
+            VideoPlayback.getInstance().init();
+
         } catch (IchInvalidSessionException e) {
             e.printStackTrace();
         }
@@ -86,5 +100,9 @@ public class MyCamera {
 
     public ICatchWificamVideoPlayback getVideoPlayback() {
         return videoPlayback;
+    }
+
+    public Boolean destroyCamera() {
+        return mCameraSession.destroySession();
     }
 }

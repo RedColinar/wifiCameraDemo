@@ -19,15 +19,14 @@ import java.util.List;
  * @description
  */
 public class CameraProperties {
-    private List<Integer> supportedPropertieList;
+    private List<Integer> supportedPropertyList;
     private List<ICatchMode> modeList;
 
     private ICatchWificamProperty cameraProperty;
     private ICatchWificamControl cameraControl;
 
     private CameraProperties() {
-        cameraProperty = MyApplication.getMyCamera().getCameraProperty();
-        cameraControl = MyApplication.getMyCamera().getCameraControl();
+        init();
     }
 
     private static class CameraPropertiesHolder {
@@ -36,6 +35,12 @@ public class CameraProperties {
 
     public static CameraProperties getInstance() {
         return CameraPropertiesHolder.sInstance;
+    }
+
+    public void init() {
+        cameraProperty = MyApplication.getMyCamera().getCameraProperty();
+        cameraControl = MyApplication.getMyCamera().getCameraControl();
+        supportedPropertyList = null;
     }
 
     public List<String> getSupportedImageSizes() {
@@ -98,11 +103,11 @@ public class CameraProperties {
     }
 
     public boolean hasProperty(int property) {
-        if (supportedPropertieList == null) {
-            supportedPropertieList = getSupportedProperties();
+        if (supportedPropertyList == null) {
+            supportedPropertyList = getSupportedProperties();
         }
 
-        return supportedPropertieList.contains(property);
+        return supportedPropertyList.contains(property);
     }
 
     private List<Integer> getSupportedProperties() {

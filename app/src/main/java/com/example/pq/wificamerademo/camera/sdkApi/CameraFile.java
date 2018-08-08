@@ -20,7 +20,7 @@ public class CameraFile {
     private ICatchWificamPlayback cameraPlayback;
 
     private CameraFile() {
-        cameraPlayback = MyApplication.getMyCamera().getCameraPlayback();
+        init();
     }
 
     private static class CameraFileHolder {
@@ -29,6 +29,10 @@ public class CameraFile {
 
     public static CameraFile getInstance() {
         return CameraFileHolder.sInstance;
+    }
+
+    public void init() {
+        cameraPlayback = MyApplication.getMyCamera().getCameraPlayback();
     }
 
     public List<ICatchFile> getFileList(ICatchFileType type) {
@@ -45,7 +49,7 @@ public class CameraFile {
 
     public boolean downloadFile(ICatchFile file, String path) {
         String filePath = FileUtils.createUniqueFilename(path);
-        return ExceptionHelper.invokeBool(() -> cameraPlayback.downloadFileQuick(file, filePath));
+        return ExceptionHelper.invokeBool(() -> cameraPlayback.downloadFile(file, filePath));
     }
 
     public ICatchFrameBuffer downloadFile(ICatchFile curFile) {

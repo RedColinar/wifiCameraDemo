@@ -9,6 +9,8 @@ import com.icatch.wificam.customer.exception.IchDevicePropException;
 import com.icatch.wificam.customer.exception.IchInvalidArgumentException;
 import com.icatch.wificam.customer.exception.IchInvalidPasswdException;
 import com.icatch.wificam.customer.exception.IchInvalidSessionException;
+import com.icatch.wificam.customer.exception.IchListenerExistsException;
+import com.icatch.wificam.customer.exception.IchListenerNotExistsException;
 import com.icatch.wificam.customer.exception.IchNoSDCardException;
 import com.icatch.wificam.customer.exception.IchNoSuchFileException;
 import com.icatch.wificam.customer.exception.IchNoSuchPathException;
@@ -62,6 +64,8 @@ public class ExceptionHelper {
                 | IchTryAgainException
                 | IchPbStreamPausedException
                 | IchAudioStreamClosedException
+                | IchListenerExistsException
+                | IchListenerNotExistsException
                 e) {
             e.printStackTrace();
             if (consumer != null) {
@@ -89,7 +93,9 @@ public class ExceptionHelper {
                 IchNoSDCardException,
                 IchTryAgainException,
                 IchPbStreamPausedException,
-                IchAudioStreamClosedException;
+                IchAudioStreamClosedException,
+                IchListenerExistsException,
+                IchListenerNotExistsException;
     }
 
     public interface Consumer {

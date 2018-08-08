@@ -6,11 +6,6 @@ import com.icatch.wificam.customer.ICatchWificamAssist;
 import com.icatch.wificam.customer.ICatchWificamControl;
 import com.icatch.wificam.customer.ICatchWificamListener;
 import com.icatch.wificam.customer.ICatchWificamSession;
-import com.icatch.wificam.customer.exception.IchCameraModeException;
-import com.icatch.wificam.customer.exception.IchCaptureImageException;
-import com.icatch.wificam.customer.exception.IchInvalidSessionException;
-import com.icatch.wificam.customer.exception.IchListenerExistsException;
-import com.icatch.wificam.customer.exception.IchSocketException;
 
 /**
  * @author panqiang
@@ -18,14 +13,14 @@ import com.icatch.wificam.customer.exception.IchSocketException;
  * @date 2018/8/3 14:51
  * @description
  */
+@SuppressWarnings("all")
 public class CameraAction {
 
     private ICatchWificamControl cameraControl;
     private ICatchWificamAssist cameraAssist;
 
     private CameraAction() {
-        cameraControl = MyApplication.getMyCamera().getCameraControl();
-        cameraAssist = MyApplication.getMyCamera().getCameraAssist();
+        init();
     }
 
     public static CameraAction getInstance() {
@@ -35,6 +30,12 @@ public class CameraAction {
     private static class CameraActionHolder {
         private static final CameraAction sInstance = new CameraAction();
     }
+
+    public void init() {
+        cameraControl = MyApplication.getMyCamera().getCameraControl();
+        cameraAssist = MyApplication.getMyCamera().getCameraAssist();
+    }
+
     public boolean capturePhoto() {
         return ExceptionHelper.invokeBool(cameraControl::capturePhoto);
     }
@@ -43,16 +44,27 @@ public class CameraAction {
         return ExceptionHelper.invokeBool(cameraControl::triggerCapturePhoto);
     }
 
-    public static boolean addGlobalEventListener(int iCatchEventID, ICatchWificamListener listener, Boolean forAllSession) {
-        boolean retValue = false;
-        try {
-            retValue = ICatchWificamSession.addEventListener(iCatchEventID, listener,forAllSession);
-        } catch (IchListenerExistsException e) {
-            e.printStackTrace();
-        }
-        return retValue;
+    public static boolean addGlobalEventListener(int iCatchEventId, ICatchWificamListener listener, Boolean forAllSession) {
+        return ExceptionHelper.invokeBool(() -> ICatchWificamSession.addEventListener(iCatchEventId, listener, forAllSession));
     }
 
+    public static boolean delGlobalEventListener(int iCatchEventId, ICatchWificamListener listener, Boolean forAllSession) {
+        return ExceptionHelper.invokeBool(() -> ICatchWificamSession.delEventListener(iCatchEventId, listener, forAllSession));
+    }
 
+    public boolean addEventListener(int eventId, ICatchWificamListener listener) {
+        return ExceptionHelper.invokeBool(() -> cameraControl.addEventListener(eventId, listener));
+    }
 
+    public boolean delEventListener(int eventId, ICatchWificamListener listener) {
+        return ExceptionHelper.invokeBool(() -> cameraControl.delEventListener(eventId, listener));
+    }
+
+    public boolean addCustomEventListener(int eventId, ICatchWificamListener listener) {
+        return ExceptionHelper.invokeBool(() -> cameraControl.addCustomEventListener(eventId, listener));
+    }
+
+    public boolean delCustomEventListener(int eventId, ICatchWificamListener listener) {
+        return ExceptionHelper.invokeBool(() -> cameraControl.delCustomEventListener(eventId, listener));
+    }
 }

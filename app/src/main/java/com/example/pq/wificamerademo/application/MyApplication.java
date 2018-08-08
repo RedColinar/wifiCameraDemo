@@ -21,7 +21,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        sdkEvent = new SdkEvent();
+        // sdkEvent = new SdkEvent();
     }
 
     public static MyCamera getMyCamera() {
