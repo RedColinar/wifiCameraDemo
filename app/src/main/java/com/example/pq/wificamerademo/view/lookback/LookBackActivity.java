@@ -13,9 +13,11 @@ import com.example.pq.wificamerademo.rx.BaseObserver;
 import com.example.pq.wificamerademo.util.StorageUtil;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.icatch.wificam.customer.type.ICatchFile;
+import com.icatch.wificam.customer.type.ICatchFileType;
 import com.icatch.wificam.customer.type.ICatchFrameBuffer;
 
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,18 +52,28 @@ public class LookBackActivity extends AppCompatActivity {
             if (fileAdded != null) {
                 final String path = StorageUtil.getDownloadPath(this);
                 File directory = new File(path);
-                if (!directory.exists()){
+                if (!directory.exists()) {
                     directory.mkdirs();
                 }
 
                 final String filePath = path + fileAdded.getFileHandle() + ".jpg";
 
-                // 抛出异常的地方
+                // 方式一
 //                CameraFile.getInstance().downloadFile(fileAdded, filePath);
 //
 //                panoView.loadImageFromBitmap(BitmapFactory.decodeFile(filePath), panoOptions);
 
+                // 方式二
                 // 如果用下面的 ICatchFrameBuffer 可以成功看照片的回放，但是退出当前页面，回到 PreviewActivity 后无法再次进入预览
+                List<ICatchFile> list = CameraFile.getInstance().getFileList(ICatchFileType.ICH_TYPE_IMAGE);
+
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getFileHandle() == fileAdded.getFileHandle()) {
+                        fileAdded = list.get(i);
+                        break;
+                    }
+                }
+
                 ICatchFrameBuffer buffer = CameraFile.getInstance().downloadFile(fileAdded);
                 if (buffer != null) {
                     panoOptions.inputType = VrPanoramaView.Options.TYPE_MONO;

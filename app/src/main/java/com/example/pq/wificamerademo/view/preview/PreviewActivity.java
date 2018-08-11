@@ -59,6 +59,7 @@ public class PreviewActivity extends AppCompatActivity {
     MPreview mPreview;
     Button capture;
     Button continuePhoto;
+    Button albums;
 
     MyCamera myCamera;
     PreviewStream previewStream;
@@ -85,9 +86,18 @@ public class PreviewActivity extends AppCompatActivity {
         ivPreview = findViewById(R.id.iv_preview);
         capture = findViewById(R.id.do_capture);
         continuePhoto = findViewById(R.id.continue_photo);
+        albums = findViewById(R.id.albums);
 
         capture.setOnClickListener(v -> startCapture());
         continuePhoto.setOnClickListener(v -> initPreview());
+        albums.setOnClickListener(v -> {
+            stopMPreview();
+            stopMediaStream();
+            deleteEvent();
+
+            ICatchFile iCatchFile = new ICatchFile(10);
+            LookBackActivity.startActivity(PreviewActivity.this, iCatchFile);
+        });
 
         myCamera = MyApplication.getMyCamera();
         previewStream = PreviewStream.getInstance();
@@ -174,6 +184,10 @@ public class PreviewActivity extends AppCompatActivity {
         curCacheTime = CameraProperties.getInstance().getPreviewCacheTime();
 
         if (streamUrl == null) {
+            if (curCacheTime > 0 && curCacheTime < 200) {
+                curCacheTime = 200;
+            }
+            ICatchWificamConfig.getInstance().setPreviewCacheParam(curCacheTime, 200);
             ICatchMJPGStreamParam param = new ICatchMJPGStreamParam();
             return previewStream.startMediaStream(myCamera.getPreviewStream(), param, ichVideoPreviewMode, AppInfo.disableAudio);
         }
@@ -322,10 +336,11 @@ public class PreviewActivity extends AppCompatActivity {
                     Toast.makeText(PreviewActivity.this, "拍照成功", Toast.LENGTH_SHORT).show();
                     break;
                 case SdkEvent.EVENT_FILE_ADDED:
-                    stopMPreview();
-                    stopMediaStream();
-                    deleteEvent();
-                    LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj);
+//                    stopMPreview();
+//                    stopMediaStream();
+                    // deleteEvent();
+
+                    // LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj);
 
                     // postDelayed(() -> LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj), 1000);
                     break;

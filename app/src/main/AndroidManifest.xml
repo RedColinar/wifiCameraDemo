@@ -28,6 +28,8 @@
             android:label="@string/title_activity_preview"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".view.lookback.LookBackActivity" />
+        <activity android:name=".view.md360.MD360Activity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

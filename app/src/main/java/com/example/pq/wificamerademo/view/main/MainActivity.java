@@ -9,6 +9,7 @@ import com.example.pq.wificamerademo.R;
 import com.example.pq.wificamerademo.application.MyApplication;
 import com.example.pq.wificamerademo.camera.MyCamera;
 import com.example.pq.wificamerademo.rx.BaseObserver;
+import com.example.pq.wificamerademo.view.md360.MD360Activity;
 import com.example.pq.wificamerademo.view.preview.PreviewActivity;
 import com.example.pq.wificamerademo.wifi.HotSpot;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     Button btConnect;
+    Button btPreview;
     MyCamera currentCamera;
 
     @Override
@@ -28,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btConnect = findViewById(R.id.bt_connect);
+        btPreview = findViewById(R.id.bt_preview);
         btConnect.setOnClickListener(v -> launchCamera());
+        btPreview.setOnClickListener(v -> MD360Activity.startActivity(this));
     }
 
     private void launchCamera() {
