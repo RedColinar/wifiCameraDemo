@@ -4,6 +4,7 @@ import com.example.pq.wificamerademo.application.MyApplication;
 import com.example.pq.wificamerademo.camera.ExceptionHelper;
 import com.example.pq.wificamerademo.constants.PropertyId;
 import com.example.pq.wificamerademo.util.DataConvertUtils;
+import com.icatch.wificam.core.jni.JWificamProperty;
 import com.icatch.wificam.customer.ICatchWificamControl;
 import com.icatch.wificam.customer.ICatchWificamProperty;
 import com.icatch.wificam.customer.type.ICatchCodec;
@@ -78,6 +79,13 @@ public class CameraProperties {
 
     public boolean setCaptureDelayMode(int value) {
         return ExceptionHelper.invokeBool(() -> cameraProperty.setPropertyValue(PropertyId.CAPTURE_DELAY_MODE, value));
+    }
+
+    public String getCurrentPropertyStringValue(int propertyId) {
+        return ExceptionHelper.invoke(() -> {
+            // cameraProperty.getCurrentPropertyStringValue(propertyId);
+            return JWificamProperty.getCurrentStringPropertyValue_Jni(MyApplication.getMyCamera().getCameraSession().getSessionId(), propertyId);
+        });
     }
 
     public String getCurrentStreamInfo() {

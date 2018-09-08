@@ -52,4 +52,6 @@ public class PropertyId {
 
     //JIRA BSP-1906
     public final static int CAMERA_DATE_TIMEZONE = 0xD83E;
+
+    public final static int GET_FILENAME_PATH = 0xD83A;
 }

@@ -33,6 +33,8 @@ public class LookBackActivity extends AppCompatActivity {
 
     private static ICatchFile file;
 
+    private static String filePath;
+
     private VrPanoramaView panoView;
 
     private VrPanoramaView.Options panoOptions = new VrPanoramaView.Options();
@@ -59,32 +61,32 @@ public class LookBackActivity extends AppCompatActivity {
                 final String filePath = path + fileAdded.getFileHandle() + ".jpg";
 
                 // 方式一
-//                CameraFile.getInstance().downloadFile(fileAdded, filePath);
-//
-//                panoView.loadImageFromBitmap(BitmapFactory.decodeFile(filePath), panoOptions);
+                // CameraFile.getInstance().downloadFile(fileAdded, filePath);
+                CameraFile.getInstance().downloadFile(fileAdded.getFilePath(), filePath);
+                panoView.loadImageFromBitmap(BitmapFactory.decodeFile(filePath), panoOptions);
 
                 // 方式二
                 // 如果用下面的 ICatchFrameBuffer 可以成功看照片的回放，但是退出当前页面，回到 PreviewActivity 后无法再次进入预览
                 List<ICatchFile> list = CameraFile.getInstance().getFileList(ICatchFileType.ICH_TYPE_IMAGE);
-
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getFileHandle() == fileAdded.getFileHandle()) {
-                        fileAdded = list.get(i);
-                        break;
-                    }
-                }
-
-                ICatchFrameBuffer buffer = CameraFile.getInstance().downloadFile(fileAdded);
-                if (buffer != null) {
-                    panoOptions.inputType = VrPanoramaView.Options.TYPE_MONO;
-                    try {
-                        // panoView.loadImageFromByteArray(buffer.getBuffer(), panoOptions);
-                        panoView.loadImageFromBitmap(BitmapFactory.decodeByteArray(buffer.getBuffer(), 0, buffer.getBuffer().length), panoOptions);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                return buffer;
+//
+//                for (int i = 0; i < list.size(); i++) {
+//                    if (list.get(i).getFileHandle() == fileAdded.getFileHandle()) {
+//                        fileAdded = list.get(i);
+//                        break;
+//                    }
+//                }
+//
+//                ICatchFrameBuffer buffer = CameraFile.getInstance().downloadFile(fileAdded);
+//                if (buffer != null) {
+//                    panoOptions.inputType = VrPanoramaView.Options.TYPE_MONO;
+//                    try {
+//                        // panoView.loadImageFromByteArray(buffer.getBuffer(), panoOptions);
+//                        panoView.loadImageFromBitmap(BitmapFactory.decodeByteArray(buffer.getBuffer(), 0, buffer.getBuffer().length), panoOptions);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return buffer;
             }
             return null;
         })
@@ -118,5 +120,11 @@ public class LookBackActivity extends AppCompatActivity {
         Intent intent = new Intent(context, LookBackActivity.class);
         context.startActivity(intent);
         LookBackActivity.file = file;
+    }
+
+    public static void startActivity(Context context, String filePath) {
+        Intent intent = new Intent(context, LookBackActivity.class);
+        context.startActivity(intent);
+        LookBackActivity.filePath = filePath;
     }
 }

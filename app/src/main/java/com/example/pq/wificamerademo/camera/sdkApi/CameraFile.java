@@ -52,6 +52,11 @@ public class CameraFile {
         return ExceptionHelper.invokeBool(() -> cameraPlayback.downloadFile(file, filePath));
     }
 
+    public boolean downloadFile(String src, String des) {
+        String filePath = FileUtils.createUniqueFilename(des);
+        return ExceptionHelper.invokeBool(() -> cameraPlayback.downloadFile(src, filePath));
+    }
+
     public ICatchFrameBuffer downloadFile(ICatchFile curFile) {
         return ExceptionHelper.invoke(() -> cameraPlayback.downloadFile(curFile));
     }

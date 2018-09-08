@@ -2,7 +2,6 @@ package com.example.pq.wificamerademo.view.preview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -19,30 +18,26 @@ import com.example.pq.wificamerademo.bean.StreamInfo;
 import com.example.pq.wificamerademo.camera.MyCamera;
 import com.example.pq.wificamerademo.camera.SdkEvent;
 import com.example.pq.wificamerademo.camera.sdkApi.CameraAction;
-import com.example.pq.wificamerademo.camera.sdkApi.CameraFile;
 import com.example.pq.wificamerademo.camera.sdkApi.CameraProperties;
 import com.example.pq.wificamerademo.camera.sdkApi.PreviewStream;
 import com.example.pq.wificamerademo.constants.AppInfo;
 import com.example.pq.wificamerademo.constants.GlobalInfo;
 import com.example.pq.wificamerademo.constants.PreviewMode;
+import com.example.pq.wificamerademo.constants.PropertyId;
 import com.example.pq.wificamerademo.function.PhotoCapture;
-import com.example.pq.wificamerademo.glide.GlideApp;
 import com.example.pq.wificamerademo.rx.BaseObserver;
-import com.example.pq.wificamerademo.util.BitmapUtils;
 import com.example.pq.wificamerademo.util.FastClickUtils;
-import com.example.pq.wificamerademo.util.StorageUtil;
 import com.example.pq.wificamerademo.view.lookback.LookBackActivity;
 import com.example.pq.wificamerademo.widget.MPreview;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.icatch.wificam.customer.ICatchWificamConfig;
 import com.icatch.wificam.customer.type.ICatchEventID;
 import com.icatch.wificam.customer.type.ICatchFile;
-import com.icatch.wificam.customer.type.ICatchFrameBuffer;
+import com.icatch.wificam.customer.type.ICatchFileType;
 import com.icatch.wificam.customer.type.ICatchH264StreamParam;
 import com.icatch.wificam.customer.type.ICatchMJPGStreamParam;
 import com.icatch.wificam.customer.type.ICatchPreviewMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +46,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.pq.wificamerademo.constants.PropertyId.CAPTURE_DELAY_MODE;
-import static com.example.pq.wificamerademo.constants.PropertyId.FAST_CAPTURE;
 
 public class PreviewActivity extends AppCompatActivity {
 
@@ -306,6 +300,7 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private class PreviewHandler extends Handler {
+        String filePath;
         @Override
         public void handleMessage(Message msg) {
             //super.handleMessage(msg);
@@ -332,6 +327,9 @@ public class PreviewActivity extends AppCompatActivity {
                         }
                         curMode = PreviewMode.STILL_PREVIEW;
                     }
+                    filePath = CameraProperties.getInstance().getCurrentPropertyStringValue(PropertyId.GET_FILENAME_PATH);
+                    filePath = filePath.replace("D:", "").replace("\\", "/");
+                    //LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj);
                     setCaptureBtnEnable(true);
                     Toast.makeText(PreviewActivity.this, "拍照成功", Toast.LENGTH_SHORT).show();
                     break;
@@ -339,8 +337,9 @@ public class PreviewActivity extends AppCompatActivity {
 //                    stopMPreview();
 //                    stopMediaStream();
                     // deleteEvent();
-
-                    // LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj);
+                    ICatchFile old = (ICatchFile) msg.obj;
+                    ICatchFile iCatchFile = new ICatchFile(old.getFileHandle(), ICatchFileType.ICH_TYPE_IMAGE, filePath, old.getFileName(), old.getFileSize());
+                    LookBackActivity.startActivity(PreviewActivity.this, iCatchFile);
 
                     // postDelayed(() -> LookBackActivity.startActivity(PreviewActivity.this, (ICatchFile) msg.obj), 1000);
                     break;

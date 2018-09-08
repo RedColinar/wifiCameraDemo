@@ -2,8 +2,10 @@ package com.example.pq.wificamerademo.view.md360;
 
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,7 +14,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -33,6 +37,7 @@ import com.example.pq.wificamerademo.R;
 import com.example.pq.wificamerademo.glide.GlideApp;
 import com.example.pq.wificamerademo.util.FastClickUtils;
 import com.example.pq.wificamerademo.util.StorageUtil;
+import com.google.android.apps.muzei.render.GLTextureView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,6 +62,7 @@ public class MD360Activity extends AppCompatActivity {
     ImageView screenThumbnail;
     private MDVRLibrary mVRLibrary;
     GLSurfaceView glSurfaceView;
+    GLTextureView glTextureView;
     private MDVRLibrary.IImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
     private MDPosition logoPosition = MDMutablePosition.newInstance().setY(-8.0f).setYaw(-90.0f);
     private ValueAnimator animator;
@@ -75,17 +81,42 @@ public class MD360Activity extends AppCompatActivity {
 
         setContentView(R.layout.activity_md);
         glSurfaceView = findViewById(R.id.gl_view);
+        glTextureView = findViewById(R.id.gl_t_view);
+
         captureScreen = findViewById(R.id.capture_screen);
         screenThumbnail = findViewById(R.id.screen_thumbnail);
         captureScreen.setOnClickListener(v -> {
             if (FastClickUtils.isFastClick()) return;
-            capturePicture(this::savePicture);
+            // GLSurface
+            // capturePicture(this::savePicture);
+            // GLTextureView
+            savePicture(glTextureView.getBitmap());
         });
 
         mVRLibrary = createVRLibrary();
+        verifyStoragePermissions(this);
 
         setLogo();
         startAnimation();
+    }
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
+
+
+    public static void verifyStoragePermissions(Activity activity) {
+        try {
+            //检测是否有写的权限
+            int permission = ActivityCompat.checkSelfPermission(activity, "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // 没有写的权限，去申请写的权限，会弹出对话框
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected MDVRLibrary createVRLibrary() {
@@ -96,28 +127,40 @@ public class MD360Activity extends AppCompatActivity {
                     // mImageLoadProvider.onProvideBitmap(currentUri(), callback);
                     try {
                         InputStream is = getAssets().open("demo.jpg");
-                        Bitmap bitmap =  BitmapFactory.decodeStream(is);
+                        final BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inSampleSize = 8;
+                        Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
+                        is.close();
+
                         mVRLibrary.onTextureResize(bitmap.getWidth(), bitmap.getHeight());
                         callback.texture(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
-
                     }
                 })
                 .pinchEnabled(true)
                 .projectionFactory(new CustomProjectionFactory())
-                .build(glSurfaceView);
+                .build(glTextureView);
     }
 
     private void savePicture(Bitmap bitmap) {
         bitmap = cutPicture(bitmap);
+        File parent = new File(StorageUtil.getDownloadPath(this));
+        boolean hasParent = parent.exists() || parent.mkdirs();
+        if (!hasParent) {
+            return;
+        }
+
         File filepic = new File(StorageUtil.getDownloadPath(this) + UUID.randomUUID().toString() + ".jpg");
         try {
             if (!filepic.exists()) {
                 filepic.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(filepic);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+
+            Log.d("vr", "savePicture: " + filepic.getAbsolutePath());
+
             fos.flush();
             fos.close();
         } catch (IOException e) {

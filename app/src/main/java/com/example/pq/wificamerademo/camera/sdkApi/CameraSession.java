@@ -32,17 +32,15 @@ public class CameraSession {
     }
 
     public boolean checkWifiConnection() {
-        boolean retValue = false;
-        try {
-            retValue = cameraSession.checkConnection();
-        } catch (IchInvalidSessionException e) {
-            e.printStackTrace();
-        }
-        return retValue;
+        return ExceptionHelper.invokeBool(cameraSession::checkConnection);
     }
 
     public boolean destroySession() {
         return ExceptionHelper.invokeBool(cameraSession::destroySession);
+    }
+
+    public int getSessionId() {
+        return ExceptionHelper.invoke(cameraSession::getSessionID);
     }
 
     public ICatchWificamSession getCameraSession() {
