@@ -1,9 +1,12 @@
 package com.example.pq.wificamerademo.wifi;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -33,11 +36,28 @@ public class HotSpot {
         return WifiManager.WIFI_STATE_ENABLED == state;
     }
 
+    /** 获取 wifi 名字 */
     public static String getSsid(Context context){
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifiManager != null) {
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            return wifiInfo.getSSID().replaceAll("\"", "");
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                NetworkInfo info = cm.getActiveNetworkInfo();
+                if (info != null && info.isConnected()) {
+                    String extra = info.getExtraInfo();
+                    // 返回的字符串可能带有额外的引号 “”
+                    if (extra.startsWith("\"")) {
+                        return extra.substring(1, extra.length() - 1);
+                    } else {
+                        return extra;
+                    }
+                }
+            }
+        } else {
+            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager != null) {
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                return wifiInfo.getSSID().replaceAll("\"", "");
+            }
         }
         return "";
     }
